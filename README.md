@@ -44,4 +44,23 @@ app/
 │ └── themes.xml
 └── AndroidManifest.xml
 
+## 📌 Use Cases
+
+- Women and child safety  
+- Medical emergencies  
+- Road accidents  
+- Elderly assistance  
+- Night travel safety  
+
+## 📜 License
+
+This project is licensed under the **MIT License**.
+
+## 🚀 Future Enhancements
+
+- 🔐 Firebase authentication and cloud data storage  
+- 🗺️ Live tracking dashboard for guardians and responders  
+- 🚓 Direct integration with police and ambulance services  
+- 📱 iOS application version  
+- 🤖 AI-based automatic emergency detection  
 
