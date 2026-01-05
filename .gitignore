@@ -45,3 +45,113 @@ dependencies {
     // Add Volley here 👇
     implementation("com.android.volley:volley:1.2.1")
 }
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="#0B0B0B"
+    android:padding="20dp">
+
+    <!-- EXTRA SPACE FROM TOP -->
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"/>
+
+    <!-- APP TITLE -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SERA"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#FF4D6D"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Smart Emergency Response"
+        android:textSize="14sp"
+        android:textColor="#AAAAAA"
+        android:layout_marginBottom="32dp"/>
+
+    <!-- SOS BUTTON WITH TEXT -->
+    <FrameLayout
+        android:layout_width="190dp"
+        android:layout_height="190dp"
+        android:layout_marginBottom="20dp">
+
+        <ImageButton
+            android:id="@+id/btnSendSOS"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_sos_circle"
+            android:contentDescription="SOS"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="SOS"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center"/>
+    </FrameLayout>
+
+    <!-- CANCEL SOS -->
+    <Button
+        android:id="@+id/btnCancelSOS"
+        android:layout_width="160dp"
+        android:layout_height="48dp"
+        android:text="CANCEL SOS"
+        android:visibility="gone"
+        android:layout_marginBottom="28dp"
+        android:backgroundTint="#B00020"
+        android:textColor="@android:color/white"/>
+
+    <!-- POLICE & HOSPITAL -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/btnPolice"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:text="Police"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/bg_card"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/btnAmbulance"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_weight="1"
+            android:text="Ambulance"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:background="@drawable/bg_card"
+            android:layout_marginStart="8dp"/>
+    </LinearLayout>
+
+    <!-- CALL EMERGENCY CONTACT -->
+    <TextView
+        android:id="@+id/btnEmergencyCall"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Call Emergency Contact"
+        android:gravity="center"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/bg_card"/>
+
+</LinearLayout>
