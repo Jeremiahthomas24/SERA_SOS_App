@@ -29,4 +29,19 @@ one-tap SOS alerts with real-time location sharing** to emergency contacts.
 ### SOS Trigger
 ![SOS Active]<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/35634c1e-069d-428f-9f8b-6c3c413bcdbd" />
 
+## 📁 Project Structure
+
+app/
+├── MainActivity.java # SOS UI and core logic
+├── SOSService.java # Background location updates
+├── Utils.java # Helper utilities
+├── res/
+│ ├── layout/
+│ │ └── activity_main.xml
+│ └── values/
+│ ├── colors.xml
+│ ├── strings.xml
+│ └── themes.xml
+└── AndroidManifest.xml
+
 
