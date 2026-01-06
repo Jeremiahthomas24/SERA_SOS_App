@@ -273,3 +273,153 @@ import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONObject;
 Customize Toolbar…
+
+    // ---------------- PERMISSIONS ----------------
+    private void requestAllPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                        != PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.SEND_SMS,
+                    Manifest.permission.CALL_PHONE,
+                    Manifest.permission.VIBRATE
+            }, REQ_PERM);
+        }
+    }
+
+    // ---------------- SOS FLOW ----------------
+    private void startDelayedSOS(Button cancelBtn) {
+        sosCancelled = false;
+        cancelBtn.setVisibility(View.VISIBLE);
+
+        Toast.makeText(
+                this,
+                "Sending SOS in 5 seconds… Tap CANCEL to stop",
+                Toast.LENGTH_LONG
+        ).show();
+
+        sosRunnable = () -> {
+            cancelBtn.setVisibility(View.GONE);
+            if (!sosCancelled) startSOS();
+        };
+
+        sosHandler.postDelayed(sosRunnable, 5000);
+    }
+
+    private void startSOS() {
+        if (!isLocationEnabled()) {
+            Toast.makeText(this, "Please enable GPS", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            return;
+        }
+
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(location -> {
+                    if (location != null) {
+                        handleLocation(location);
+                    } else {
+                        Toast.makeText(this, "Location unavailable", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void handleLocation(Location location) {
+        String loc = location.getLatitude() + "," + location.getLongitude();
+        sendSMS(loc);
+        sendToServer(loc);
+    }
+
+    private void sendSMS(String loc) {
+        String msg = "🚨 SERA SOS\nLocation: https://maps.google.com/?q=" + loc;
+        SmsManager sms = SmsManager.getDefault();
+
+        sms.sendTextMessage(CONTACT1, null, msg, null, null);
+        sms.sendTextMessage(CONTACT2, null, msg, null, null);
+        sms.sendTextMessage(CONTACT3, null, msg, null, null);
+
+        Toast.makeText(this, "SOS sent to contacts", Toast.LENGTH_SHORT).show();
+    }
+
+    // ---------------- CALLING ----------------
+    private void callNumber(String number) {
+        try {
+            if (ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+
+                startActivity(new Intent(
+                        Intent.ACTION_CALL,
+                        Uri.parse("tel:" + number)
+                ));
+            } else {
+                // Permission-safe fallback
+                startActivity(new Intent(
+                        Intent.ACTION_DIAL,
+                        Uri.parse("tel:" + number)
+                ));
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Unable to place call", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // ---------------- SERVER ----------------
+    private void sendToServer(String loc) {
+        try {
+            JSONObject body = new JSONObject();
+            body.put("type", "SOS");
+            body.put("location", loc);
+
+            JsonObjectRequest req = new JsonObjectRequest(
+                    Request.Method.POST,
+                    SOS_URL,
+                    body,
+                    response -> {},
+                    error -> Log.e("SERVER", error.toString())
+            );
+
+            requestQueue.add(req);
+        } catch (Exception ignored) {}
+    }
+
+    // ---------------- UTILITIES ----------------
+    private boolean isLocationEnabled() {
+        LocationManager lm =
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        return lm != null &&
+                (lm.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                        || lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
+    }
+
+    private void vibratePhone() {
+        Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        if (v == null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            v.vibrate(VibrationEffect.createOneShot(
+                    700,
+                    VibrationEffect.DEFAULT_AMPLITUDE
+            ));
+        } else {
+            v.vibrate(700);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+}
